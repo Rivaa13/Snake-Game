@@ -111,6 +111,46 @@ document.getElementById('btnDown').addEventListener('click', () => changeDirecti
 document.getElementById('btnLeft').addEventListener('click', () => changeDirection(-1, 0));
 document.getElementById('btnRight').addEventListener('click', () => changeDirection(1, 0));
 
+// Swipe controls
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener('touchstart', function (event) {
+    touchStartX = event.changedTouches[0].screenX;
+    touchStartY = event.changedTouches[0].screenY;
+}, false);
+
+document.addEventListener('touchend', function (event) {
+    let touchEndX = event.changedTouches[0].screenX;
+    let touchEndY = event.changedTouches[0].screenY;
+    handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+}, false);
+
+function handleSwipe(startX, startY, endX, endY) {
+    let diffX = endX - startX;
+    let diffY = endY - startY;
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        // Horizontal swipe
+        if (Math.abs(diffX) > 30) { // Threshold
+            if (diffX > 0) {
+                changeDirection(1, 0); // Right
+            } else {
+                changeDirection(-1, 0); // Left
+            }
+        }
+    } else {
+        // Vertical swipe
+        if (Math.abs(diffY) > 30) { // Threshold
+            if (diffY > 0) {
+                changeDirection(0, 1); // Down
+            } else {
+                changeDirection(0, -1); // Up
+            }
+        }
+    }
+}
+
 function changeDirection(x, y) {
     // Prevent reversing direction
     if (velocityX !== 0 && x !== 0) return;
